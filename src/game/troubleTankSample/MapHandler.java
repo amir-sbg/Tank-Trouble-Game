@@ -31,11 +31,12 @@ public class MapHandler {
     private static BufferedImage repairAward_Icon;
     private static BufferedImage powerAward2X_Icon;
     private static BufferedImage powerAward3X_Icon;
-    private static String mapAddress;
+    private  String mapAddress;
 
     public MapHandler() {
+        mapAddress="./r.txt";
         try {
-            BufferedReader bufferedReader = new BufferedReader(new FileReader("./r.txt"));
+            BufferedReader bufferedReader = new BufferedReader(new FileReader(mapAddress));
             ArrayList<String> textMapLines = new ArrayList<String>();
             String line;
             while ((line = bufferedReader.readLine()) != null) {
@@ -89,18 +90,19 @@ public class MapHandler {
             for (int j = 0; j < frameXsize; j++) {
                 ImageIcon imageIcon;
                 if (mapsBlocks[i][j].getBlocksType().equals(PASSABLE_FIELD))
-                    imageIcon = new ImageIcon("./t.png");
+                    imageIcon = new ImageIcon("c:/users/lenovo/Desktop/t.png");
                 else if(mapsBlocks[i][j].getBlocksType().equals(STRONG_WALL))
-                    imageIcon = new ImageIcon("./r.png");
+                    imageIcon = new ImageIcon("c:/users/lenovo/Desktop/r.png");
                 else //if(mapsBlocks[i][j].getBlocksType().equals(DESTROYABLE_WALL))
-                    imageIcon = new ImageIcon("./r.png");
+                    imageIcon = new ImageIcon("c:/users/lenovo/Desktop/r.png");
 
                 graphics2D.drawImage(imageIcon.getImage(), (mapsBlocks[i][j].getX1()), (mapsBlocks[i][j].getY1()),(mapsBlocks[i][j].getBlocksHeight()),  (mapsBlocks[i][j].getBlocksWidth()), null);
+
+
             }
         }
-
-
     }
+
 
 
 

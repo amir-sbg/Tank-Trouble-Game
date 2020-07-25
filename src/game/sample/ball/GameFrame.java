@@ -1,6 +1,8 @@
 /*** In The Name of Allah ***/
 package game.sample.ball;
 
+import game.troubleTankSample.MapHandler;
+
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
@@ -24,9 +26,12 @@ import javax.swing.JFrame;
  * @author Seyed Mohammad Ghaffarian
  */
 public class GameFrame extends JFrame {
-	
+
+
 	public static final int GAME_HEIGHT = 720;                  // 720p game resolution
 	public static final int GAME_WIDTH = 16 * GAME_HEIGHT / 9;  // wide aspect ratio
+	//MapHandler mapHandler =new MapHandler();
+
 
 	//uncomment all /*...*/ in the class for using Tank icon instead of a simple circle
 	/*private BufferedImage image;*/ 

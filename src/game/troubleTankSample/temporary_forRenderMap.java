@@ -8,10 +8,10 @@ JFrame jFrame;
 MapHandler goo;
     public temporary_forRenderMap(){
          goo = new MapHandler();
-        goo.setBlocksLocations(800, 800);
+        goo.setBlocksLocations((16*720)/9,720 );
          jFrame =new JFrame();
         jFrame.setVisible(true);
-jFrame.setSize(800,800);
+jFrame.setSize(((16*720)/9)+10, 740);
         jFrame.add(this);
     }
 

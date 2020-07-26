@@ -2,9 +2,12 @@
 package game.sample.ball;
 
 import game.troubleTankSample.Controller;
+import game.troubleTankSample.MapHandler;
 import game.troubleTankSample.windows.LoginWindow;
 
 import java.awt.EventQueue;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import javax.swing.JFrame;
 
 /**
@@ -18,6 +21,9 @@ public class Main {
 		Controller gameController = new Controller();
     	LoginWindow loginWindow = new LoginWindow();
     	loginWindow.setVisible(true);
+
+
+
 
 		// Initialize the global thread-pool
 //		ThreadPool.init();

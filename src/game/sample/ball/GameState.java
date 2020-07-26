@@ -1,6 +1,8 @@
 /*** In The Name of Allah ***/
 package game.sample.ball;
 
+import game.troubleTankSample.Tank;
+
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -16,17 +18,19 @@ import java.awt.event.MouseMotionListener;
  * @author Seyed Mohammad Ghaffarian
  */
 public class GameState {
-	
+	private GameFrame gameFrame;
 	public int locX, locY, diam;
 	public boolean gameOver;
 	
 	private boolean keyUP, keyDOWN, keyRIGHT, keyLEFT;
 	private boolean mousePress;
-	private int mouseX, mouseY;	
+	private int mouseX, mouseY;
+	public static boolean isMoving = false;
 	private KeyHandler keyHandler;
 	private MouseHandler mouseHandler;
 	
-	public GameState() {
+	public GameState(GameFrame gameFrame) {
+		this.gameFrame = gameFrame;
 		locX = 100;
 		locY = 100;
 		diam = 32;
@@ -49,23 +53,119 @@ public class GameState {
 	 * The method which updates the game state.
 	 */
 	public void update() {
-		if (mousePress) {
-			locY = mouseY - diam / 2;
-			locX = mouseX - diam / 2;
-		}
-		if (keyUP)
-			locY -= 8;
-		if (keyDOWN)
-			locY += 8;
-		if (keyLEFT)
-			locX -= 8;
-		if (keyRIGHT)
-			locX += 8;
+		isMoving = keyDOWN || keyUP || keyLEFT || keyRIGHT;
+		Tank tank = gameFrame.getMyTank();
+		int centerX = tank.getLocX() + GameFrame.TANK_SIZE/2;
+		int centerY = tank.getLocY() + GameFrame.TANK_SIZE/2;
+		int angle = tank.getBodyAngel();
+		double diam = GameFrame.TANK_SIZE;
 
-		locX = Math.max(locX, 0);
-		locX = Math.min(locX, GameFrame.GAME_WIDTH - diam);
-		locY = Math.max(locY, 0);
-		locY = Math.min(locY, GameFrame.GAME_HEIGHT - diam);
+
+		if (keyUP && !keyDOWN) {
+			if (keyRIGHT && !keyLEFT) {
+				if (angle > 40){
+					angle = angle - 360;
+				}
+				if (angle > -140) {
+					tank.setBodyAngel(angle - 10);
+				} else if (angle < -140) {
+					tank.setBodyAngel(angle + 10);
+				}
+			} else if (keyLEFT && !keyRIGHT) {
+				if (angle < -40){
+					angle = 360 + angle;
+				}
+				if (angle > 140) {
+					tank.setBodyAngel(angle - 10);
+				} else if (angle < 140) {
+					tank.setBodyAngel(angle + 10);
+				}
+			}
+//			else {
+//				if (angle > 0) {
+//					tank.setBodyAngel(angle - 10);
+//				} else if (angle < 0) {
+//					tank.setBodyAngel(angle + 10);
+//				}
+//			}
+			tank.changeY(-10);
+			tank.setLocY(Math.max(tank.getLocY(), 0));
+			tank.setLocY((int) Math.min(tank.getLocY(), GameFrame.GAME_HEIGHT - diam));
+		}
+
+		if (keyDOWN && !keyUP) {
+			if (keyRIGHT && !keyLEFT) {
+				if (angle > -40) {
+					tank.setBodyAngel(angle - 10);
+				} else if (angle < -40) {
+					tank.setBodyAngel(angle + 10);
+				}
+			} else if (keyLEFT && !keyRIGHT) {
+				if (angle > 40) {
+					tank.setBodyAngel(angle - 10);
+				} else if (angle < 40) {
+					tank.setBodyAngel(angle + 10);
+				}
+			}
+//			else {
+//				if (angle > 180) {
+//					tank.setBodyAngel(angle - 10);
+//				} else if (angle < 180) {
+//					tank.setBodyAngel(angle + 10);
+//				}
+//			}
+
+			tank.changeY(10);
+			tank.setLocY(Math.max(tank.getLocY(), 0));
+			tank.setLocY((int) Math.min(tank.getLocY(), GameFrame.GAME_HEIGHT - diam));
+		}
+
+		if (keyLEFT && !keyRIGHT) {
+//			if (!keyUP && !keyDOWN) {
+//				if (angle > -90) {
+//					tank.setBodyAngel(angle - 10);
+//				} else if (angle < -90) {
+//					tank.setBodyAngel(angle + 10);
+//				}
+//			}
+			tank.changeX(-10);
+			tank.setLocX(Math.max(tank.getLocX(), 0));
+			tank.setLocX((int) Math.min(tank.getLocX(), GameFrame.GAME_WIDTH - diam));
+		}
+
+		if (keyRIGHT && !keyLEFT) {
+//			if (!keyUP && !keyDOWN) {
+//				if (angle > 90) {
+//					tank.setBodyAngel(angle - 10);
+//				} else if (angle < 90) {
+//					tank.setBodyAngel(angle + 10);
+//				}
+//			}
+			tank.changeX(10);
+			tank.setLocX(Math.max(tank.getLocX(), 0));
+			tank.setLocX((int) Math.min(tank.getLocX(), GameFrame.GAME_WIDTH - diam));
+		}
+
+
+
+
+//		if (mousePress) {
+//			locY = mouseY - diam / 2;
+//			locX = mouseX - diam / 2;
+//		}
+//		if (keyUP)
+//			locY -= 8;
+//		if (keyDOWN)
+//			locY += 8;
+//		if (keyLEFT)
+//			locX -= 8;
+//		if (keyRIGHT)
+//			locX += 8;
+//
+//		locX = Math.max(locX, 0);
+//		locX = Math.min(locX, GameFrame.GAME_WIDTH - diam);
+//		locY = Math.max(locY, 0);
+//		locY = Math.min(locY, GameFrame.GAME_HEIGHT - diam);
 	}
 	
 	

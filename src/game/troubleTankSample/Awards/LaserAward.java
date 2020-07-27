@@ -1,5 +1,8 @@
 package game.troubleTankSample.Awards;
 
+import javax.imageio.ImageIO;
+import java.io.File;
+import java.io.IOException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -7,6 +10,11 @@ public class LaserAward extends Award {
     public LaserAward(){
         super("guardAward");
         this.awardsQuantity=3;
+        try {
+            this.awardsImage= ImageIO.read(new File("./resources/awards resources/laser.png"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

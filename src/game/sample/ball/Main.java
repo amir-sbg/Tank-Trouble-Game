@@ -1,6 +1,7 @@
 /*** In The Name of Allah ***/
 package game.sample.ball;
 
+import game.troubleTankSample.Controller;
 import game.troubleTankSample.MapHandler;
 import game.troubleTankSample.windows.LoginWindow;
 
@@ -17,6 +18,7 @@ import javax.swing.JFrame;
 public class Main {
 	
     public static void main(String[] args) {
+		Controller gameController = new Controller();
     	LoginWindow loginWindow = new LoginWindow();
     	loginWindow.setVisible(true);
 

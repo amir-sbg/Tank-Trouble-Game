@@ -79,7 +79,7 @@ public class MapHandler {
 
 
         } catch (FileNotFoundException e) {
-            System.err.println("map not exist!");
+            System.err.println("map does not exist!");
         } catch (IOException e) {
         }
 

@@ -1,6 +1,7 @@
 package game.troubleTankSample.windows;
 
 import game.sample.ball.GameFrame;
+import game.troubleTankSample.Controller;
 import game.troubleTankSample.windows.LoginWindow;
 import game.troubleTankSample.windows.SettingWindow;
 
@@ -47,6 +48,13 @@ public class MainWindow {
         computerGame.setContentAreaFilled(false);
         computerGame.setBorderPainted(false);
         computerGame.setFocusPainted(false);
+        computerGame.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                mainFrame.setVisible(false);
+                Controller.startGame();
+            }
+        });
 
         networkGame = new JButton(new ImageIcon("resources/multiplayer.png"));
         networkGame.setPressedIcon(new ImageIcon("resources/multiplayer2.png"));

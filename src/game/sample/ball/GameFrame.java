@@ -1,7 +1,7 @@
 /*** In The Name of Allah ***/
 package game.sample.ball;
 
-import game.troubleTankSample.MapHandler;
+import game.troubleTankSample.Tank;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -9,10 +9,7 @@ import java.awt.Graphics2D;
 import java.awt.Toolkit;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
-import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 
 /**
@@ -30,6 +27,8 @@ public class GameFrame extends JFrame {
 
 	public static final int GAME_HEIGHT = 720;                  // 720p game resolution
 	public static final int GAME_WIDTH = 16 * GAME_HEIGHT / 9;  // wide aspect ratio
+	private static Tank myTank;
+	public static final int TANK_SIZE = 70;
 	//MapHandler mapHandler =new MapHandler();
 
 
@@ -43,6 +42,9 @@ public class GameFrame extends JFrame {
 	
 	public GameFrame(String title) {
 		super(title);
+
+		myTank = new Tank(100, 20, 20, "resources/tank_blue.png");
+
 		setResizable(false);
 		setSize(GAME_WIDTH, GAME_HEIGHT);
 		lastRender = -1;
@@ -107,10 +109,10 @@ public class GameFrame extends JFrame {
 		g2d.setColor(Color.GRAY);
 		g2d.fillRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
 		// Draw ball
-		g2d.setColor(Color.BLACK);
-		g2d.fillOval(state.locX, state.locY, state.diam, state.diam);
+//		g2d.setColor(Color.BLACK);
+//		g2d.fillOval(state.locX, state.locY, state.diam, state.diam);
 
-/*		g2d.drawImage(image,state.locX,state.locY,null);*/
+		renderTank(myTank, g2d, state);
 
 
 		// Print FPS info
@@ -149,5 +151,24 @@ public class GameFrame extends JFrame {
 			g2d.drawString(str, (GAME_WIDTH - strWidth) / 2, GAME_HEIGHT / 2);
 		}
 	}
-	
+
+	private void renderTank(Tank tank, Graphics2D g2d, GameState state) {
+		Integer tankBodyX = tank.getLocX();
+		Integer tankBodyY = tank.getLocY();
+		BufferedImage tankBodyImage = tank.getTankBodyImage();
+		renderByChangeOfCoordinates(g2d, tankBodyX + TANK_SIZE / 2, tankBodyY + TANK_SIZE / 2, tankBodyImage, Math.toRadians(tank.getBodyAngel()));
+
+	}
+
+	public void renderByChangeOfCoordinates(Graphics2D g2d, Integer tankCenterX, Integer tankCenterY, BufferedImage shapeImage, double g2dAngel) {
+		g2d.translate(tankCenterX, tankCenterY);
+		g2d.rotate(g2dAngel);
+		g2d.drawImage(shapeImage, -TANK_SIZE / 2, -TANK_SIZE / 2, TANK_SIZE, TANK_SIZE, null);
+		g2d.rotate(-g2dAngel);
+		g2d.translate(-tankCenterX, -tankCenterY);
+	}
+
+	public Tank getMyTank() {
+		return myTank;
+	}
 }

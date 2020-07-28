@@ -1,5 +1,7 @@
 package game.troubleTankSample.Awards;
 
+import game.troubleTankSample.Tank;
+
 import javax.imageio.ImageIO;
 import java.io.File;
 import java.io.IOException;
@@ -14,7 +16,7 @@ public class PowerBoosterAward extends Award {
             try {
                 this.awardsImage= ImageIO.read(new File("./resources/awards resources/2Xpower.png"));
             } catch (IOException e) {
-                e.printStackTrace();
+                System.err.println("Image Does Not Exist!");
             }
         } else {
             this.awardsType = "powerAward3X";
@@ -28,8 +30,9 @@ public class PowerBoosterAward extends Award {
     }
 
     @Override
-    public void doAction(/*Tank tank*/) {
+    public void doAction(Tank tank) {
         //todo
-        //tank.setPower(tank.getPower()*awardsQuantity);
+        tank.setPower((int) (tank.getPower()*awardsQuantity));
+        tank.setPowerBoosted(true);
     }
 }

@@ -1,12 +1,17 @@
 package game.troubleTankSample;
 
 public class Block {
-    private int x1, x2, x3, x4, y1, y2, y3, y4, blocksHeight, blocksWidth;
+    private int x1, x2, x3, x4, y1, y2, y3, y4, blocksHeight, blocksWidth,health;
     private String blocksType;
 
     public Block( String blocksType) {
 
         this.blocksType=blocksType;
+        if(blocksType.equals("strongWall"))
+            health=9999;
+        else if(blocksType.equals("passableField"))
+            health=0;
+
     }
     public void setLocation(int x, int y, int blocksHeight, int blocksWidth){
         this.x1 = x;                                //     1_______2
@@ -19,6 +24,7 @@ public class Block {
         this.y4 = y + blocksHeight;
         this.blocksHeight = blocksHeight;
         this.blocksWidth = blocksWidth;
+
     }
     public int getX1() { return x1; }
     public int getX2() { return x2; }
@@ -32,4 +38,12 @@ public class Block {
     public int getBlocksWidth() { return blocksWidth; }
     public String getBlocksType() { return blocksType; }
     public void setBlocksType(String blocksType) { this.blocksType = blocksType; }
+
+    public int getHealth() {
+        return health;
+    }
+
+    public void setHealth(int health) {
+        this.health = health;
+    }
 }

@@ -1,5 +1,7 @@
 package game.troubleTankSample.Awards;
 
+import game.troubleTankSample.Tank;
+
 import javax.imageio.ImageIO;
 import java.io.File;
 import java.io.IOException;
@@ -12,14 +14,14 @@ public class HealerAward extends Award{
         try {
             this.awardsImage= ImageIO.read(new File("./resources/awards resources/healer.png"));
         } catch (IOException e) {
-            e.printStackTrace();
+            System.err.println("Image Does Not Exist!");
         }
     }
 
     @Override
-    public void doAction(/*Tank tank*/) {
-        //TODO
-      //  tank.setHeal(awardsQuantity*tank.getHeal());
+    public void doAction(Tank tank) {
+
+      tank.setHealth((int) (awardsQuantity*tank.getHealth()));
     }
 
 }

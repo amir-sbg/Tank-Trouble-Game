@@ -138,7 +138,7 @@ public class GameFrame extends JFrame {
         ////////////// RENDER DETAILS/////////////
         //renderDetails(g2d);
 
-        
+
         // Print FPS info
         long currentRender = System.currentTimeMillis();
         if (lastRender > 0) {
@@ -204,6 +204,8 @@ public class GameFrame extends JFrame {
         }
         i = 0;
         for (Tank tank : tanks) {
+            g2d.drawImage(tank.getTankBodyImage(), 15, 35 * i + 35, 30, 30, null, null);
+            i++;
             float health =( tank.getHealth() > 9999999) ? 10 : (tank.getHealth()) / 10;
 
             for (int j = 0; j <= health; j++) {

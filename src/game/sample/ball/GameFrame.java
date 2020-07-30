@@ -31,7 +31,7 @@ public class GameFrame extends JFrame {
     private static Tank myTank;
     public static final int TANK_SIZE = 70;
     private ArrayList<Tank> tanks;
-    //MapHandler mapHandler =new MapHandler();
+
 
 
     //uncomment all /*...*/ in the class for using Tank icon instead of a simple circle
@@ -39,12 +39,12 @@ public class GameFrame extends JFrame {
 
     private long lastRender;
     private ArrayList<Float> fpsHistory;
-
+    private MapHandler mapHandler ;
     private BufferStrategy bufferStrategy;
 
     public GameFrame(String title) {
         super(title);
-
+        mapHandler = new MapHandler();
         myTank = new Tank(100, 20, 20, "resources/tank_blue.png");
 
         setResizable(false);
@@ -59,19 +59,19 @@ public class GameFrame extends JFrame {
 			System.out.println(e);
 		}*/
 
+        //////////             JUST FOR TEST            //////////////////
+        tanks = new ArrayList<Tank>();
+        Tank one = new Tank(50, 500, 90, "./resources/tank_dark.png");
+		one.setPowerBoosted(true);
+		one.setLaser(true);
+        one.setShield(true);
+        tanks.add(one);
+        tanks.add(new Tank(60, 700, 90, "./resources/tank_sand.png"));
+        tanks.add(new Tank(100, 300, 503, "./resources/tank_green.png"));
+        tanks.add(new Tank(40, 300, 503, "./resources/tank_blue.png"));
+        /////
 
-//        tanks = new ArrayList<Tank>();
-//        Tank one = new Tank(50, 500, 90, "./resources/tank_dark.png");
-//		one.setPowerBoosted(true);
-//		one.setLaser(true);
-//        one.setShield(true);
-//
-//        tanks.add(one);
-//
-//
-//        tanks.add(new Tank(60, 700, 90, "./resources/tank_sand.png"));
-//        tanks.add(new Tank(100, 300, 503, "./resources/tank_green.png"));
-//        tanks.add(new Tank(40, 300, 503, "./resources/tank_blue.png"));
+
     }
 
     /**
@@ -122,21 +122,23 @@ public class GameFrame extends JFrame {
      */
     private void doRendering(Graphics2D g2d, GameState state) {
         // Draw background
-        g2d.setColor(Color.GRAY);
-        g2d.fillRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
+//        g2d.setColor(Color.GRAY);
+//        g2d.fillRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
         // Draw ball
 //		g2d.setColor(Color.BLACK);
 //		g2d.fillOval(state.locX, state.locY, state.diam, state.diam);
 
-        MapHandler o = new MapHandler();
-        o.setBlocksLocations(GAME_WIDTH, GAME_HEIGHT);
-        o.renderer(g2d);
-        //TANK_SIZE=(o.getStandardX()+o.getStandardY())/2;
+       //////////////////////////// RENDER MAP////////////////////////////////////
+        mapHandler.setBlocksLocations(GAME_WIDTH, GAME_HEIGHT);
+        mapHandler.renderer(g2d);
+
 
 
         renderTank(myTank, g2d, state);
-        renderDetails(g2d);
+        ////////////// RENDER DETAILS/////////////
+        //renderDetails(g2d);
 
+        
         // Print FPS info
         long currentRender = System.currentTimeMillis();
         if (lastRender > 0) {

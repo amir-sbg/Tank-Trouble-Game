@@ -5,7 +5,7 @@ import java.awt.*;
 
 public class temporary_forRenderMap extends JPanel {
 JFrame jFrame;
-MapHandler goo;
+public MapHandler goo;
     public temporary_forRenderMap(){
          goo = new MapHandler();
         goo.setBlocksLocations((16*720)/9,720 );
@@ -13,6 +13,10 @@ MapHandler goo;
         jFrame.setVisible(true);
 jFrame.setSize(((16*720)/9)+10, 740);
         jFrame.add(this);
+    }
+
+    public MapHandler getGoo() {
+        return goo;
     }
 
     @Override

@@ -1,16 +1,24 @@
 package game.troubleTankSample.Awards;
 
+import game.troubleTankSample.Tank;
+
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+
 abstract public class Award {
     protected String awardsType;
     protected float awardsQuantity;
     protected int x1, x2, x3, x4, y1, y2, y3, y4, widthOfAward, heightOfAward;
+    protected BufferedImage awardsImage;
 
     public Award(String awardsType) {
         this.awardsType = awardsType;
     }
 
 
-    public abstract void doAction(/*Tank tank*/);
+    public abstract void doAction(Tank tank);
 
     public void setLocation(int x, int y, int widthOfAward, int heightOfAward) {
         this.y1 = y;
@@ -63,6 +71,15 @@ abstract public class Award {
         return x4;
     }
 
+    public void setAwardsImage(String awardsImageAddress) {
+        try {
+            this.awardsImage =  ImageIO.read(new File(awardsImageAddress));
+        } catch (IOException e) {
+            System.err.println("Image Does Not Exist!");
+        }
+    }
 
-
+    public BufferedImage getAwardsImage() {
+        return awardsImage;
+    }
 }

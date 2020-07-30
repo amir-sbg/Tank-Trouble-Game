@@ -31,10 +31,9 @@ public class Bullet {
         this.barrelAngel = barrelAngel;
         this.bulletImage = bulletImage;
         this.firstTimeBulletWasShot = firstTimeBulletWasShot;
-//        x1 = (barrelX + bulletWidth/2 * Math.sin(barrelAngel));
-//        y1 = (barrelY - bulletWidth/2 * Math.cos(barrelAngel));
-        x1 = (barrelX);
-        y1 = (barrelY);
+
+        x1 = (barrelX + bulletWidth/2 * Math.sin(barrelAngel));
+        y1 = (barrelY - bulletWidth/2 * Math.cos(barrelAngel));
         x2 = (barrelX - bulletWidth/2 * Math.sin(barrelAngel));
         y2 = (barrelY + bulletWidth/2 * Math.cos(barrelAngel));
         x3 = x2 + (Math.cos(barrelAngel) * bulletHeight);

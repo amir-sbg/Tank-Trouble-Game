@@ -1,6 +1,7 @@
 /*** In The Name of Allah ***/
 package game.sample.ball;
 
+import game.troubleTankSample.Bullet;
 import game.troubleTankSample.Tank;
 
 import java.awt.Color;
@@ -29,6 +30,7 @@ public class GameFrame extends JFrame {
 	public static final int GAME_WIDTH = 16 * GAME_HEIGHT / 9;  // wide aspect ratio
 	private static Tank myTank;
 	public static final int TANK_SIZE = 70;
+	private static ArrayList<Bullet> bullets;
 	//MapHandler mapHandler =new MapHandler();
 
 
@@ -44,6 +46,7 @@ public class GameFrame extends JFrame {
 		super(title);
 
 		myTank = new Tank(100, 20, 20, "resources/tank_blue.png");
+		bullets = new ArrayList<>();
 
 		setResizable(false);
 		setSize(GAME_WIDTH, GAME_HEIGHT);
@@ -113,7 +116,19 @@ public class GameFrame extends JFrame {
 //		g2d.fillOval(state.locX, state.locY, state.diam, state.diam);
 
 		renderTank(myTank, g2d, state);
-
+		for (Bullet bullet : bullets){
+			bullet.update();
+			renderBullet(g2d, bullet);
+			if (bullet.getX3() <= 0 || bullet.getX3() >= GameFrame.GAME_WIDTH) {
+				bullet.setBarrelAngel(Math.toRadians(180) - bullet.getBarrelAngel());
+			}
+			if (bullet.getY3() <= 0 || bullet.getY3() >= GameFrame.GAME_HEIGHT) {
+				bullet.setBarrelAngel(Math.toRadians(360) - bullet.getBarrelAngel());
+			}
+			if (bullet.getPresentTimeOfTheBullet() >= 4000){
+				//bullets.remove(bullet);
+			}
+		}
 
 		// Print FPS info
 		long currentRender = System.currentTimeMillis();
@@ -168,7 +183,18 @@ public class GameFrame extends JFrame {
 		g2d.translate(-tankCenterX, -tankCenterY);
 	}
 
+	private void renderBullet(Graphics2D g2d, Bullet bullet){
+		g2d.translate((int) bullet.getX1(), (int) bullet.getY1());
+		g2d.rotate(bullet.getBarrelAngel());
+		g2d.drawImage(bullet.getBulletImage(), 0, 0, bullet.getBulletHeight(), bullet.getBulletWidth(), null);
+		g2d.rotate(-bullet.getBarrelAngel());
+		g2d.translate((int) -bullet.getX1(), (int) -bullet.getY1());
+	}
+
 	public Tank getMyTank() {
 		return myTank;
+	}
+	public static ArrayList<Bullet> getBullets() {
+		return bullets;
 	}
 }

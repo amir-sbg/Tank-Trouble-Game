@@ -239,6 +239,9 @@ public class GameState {
 			mouseX = e.getX();
 			mouseY = e.getY();
 			mousePress = true;
+			Tank tank = gameFrame.getMyTank();
+			if (e.getButton() == MouseEvent.BUTTON1)
+				tank.fire(70);
 		}
 
 		@Override

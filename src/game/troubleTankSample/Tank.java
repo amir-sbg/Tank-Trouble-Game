@@ -1,5 +1,7 @@
 package game.troubleTankSample;
 
+import game.sample.ball.GameFrame;
+
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -12,36 +14,57 @@ public class Tank {
     private Integer speed;
     private Integer locX;
     private Integer locY;
-    private Integer width;
-    private Integer height;
     private boolean shield;
     private boolean powerBoosted;
     private boolean laser;
     private Integer bodyAngel;
     private BufferedImage tankBodyImage;
+    private Integer barrelX;
+    private Integer barrelY;
+    private Integer damage;
+    private int fireRate;
+    private Integer bulletSpeed;
+    private Integer lastTimeBulletShot;
+    private BufferedImage bulletImage;
+    private Integer bulletWidth;
+    private Integer bulletHeight;
 
 
-    public Tank(Integer health, Integer locX, Integer locY, String bodyImageAddress) {
+    public Tank( Integer locX, Integer locY, String bodyImageAddress) {
+        lastTimeBulletShot = (int) System.currentTimeMillis();
+        damage = 10;
+        fireRate = 2;
+        bulletSpeed = 20;
         shield = false;
         laser = false;
         powerBoosted=false;
         bodyAngel = 0;
-        this.health = health;
         this.locX = locX;
         this.locY = locY;
+        //TODO
+        this.health=100 ;       //READ FROM FILE
+
 
 
         try {
             tankBodyImage = ImageIO.read(new File(bodyImageAddress));
-
-        } catch (IOException e) {
-            System.out.println("Tank Image Does Not Exist!");
+            bulletImage = ImageIO.read(new File("resources/bulletBlue3.png"));
+        }
+         catch (IOException e) {
+            System.out.println("Tank Image Does Not Exist in Tank class!");
         }
     }
 
-    public void setHeightAndWeight(Integer width, Integer height) {
-        this.height = height;
-        this.width = width;
+    public void fire(Integer tankSize) {
+        bulletWidth =GameFrame.TANK_SIZE / 6;
+        bulletHeight = GameFrame.TANK_SIZE / 4;
+        barrelX = locX + GameFrame.TANK_SIZE / 2;
+        barrelY = locY + GameFrame.TANK_SIZE / 2;
+        Integer presentTime = (int) System.currentTimeMillis();
+        if (presentTime - lastTimeBulletShot >= (1000 / fireRate)) {
+            lastTimeBulletShot = presentTime;
+            GameFrame.getBullets().add(new Bullet(bulletImage, damage, bulletSpeed, Math.toRadians(bodyAngel + 90), barrelX, barrelY, bulletWidth, bulletHeight, presentTime));
+        }
     }
 
     public void setLocX(Integer locX) {
@@ -65,11 +88,11 @@ public class Tank {
     }
 
     public Integer getX3() {
-        return locX + width;
+        return locX + GameFrame.TANK_SIZE;
     }
 
     public Integer getY3() {
-        return locY + height;
+        return locY + GameFrame.TANK_SIZE;
     }
 
     public void changeX(Integer num) {
@@ -111,12 +134,12 @@ public class Tank {
     }
 
     public int getTanksXCentre() {
-        return (int) (locX + (Math.cos(Math.toRadians(bodyAngel - 45))) * ((height + width) / 2));
+        return barrelX;
 
     }
 
     public int getTanksYCentre() {
-        return (int) (locY + (Math.sin(Math.toRadians(bodyAngel - 45))) * ((height + width) / 2));
+        return barrelY;
 
     }
 
@@ -128,12 +151,16 @@ public class Tank {
         return powerBoosted;
     }
 
-    public Integer getHeight() {
-        return height;
+    public Integer getTankSize() {
+        return GameFrame.TANK_SIZE;
     }
 
-    public Integer getWidth() {
-        return width;
+    public void setBulletSpeed(Integer bulletSpeed) {
+        this.bulletSpeed = bulletSpeed;
+    }
+
+    public Integer getBulletSpeed() {
+        return bulletSpeed;
     }
 
     public void setLaser(boolean laser) {
@@ -157,7 +184,32 @@ public class Tank {
         this.bodyAngel = bodyAngel;
     }
 
-    public void setTankBodyImage1(BufferedImage image) {
-        tankBodyImage = image;
+    public void setTankBodyImage(String image)  {
+
+        try {
+            tankBodyImage=ImageIO.read(new File(image));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
     }
+
+    public Integer getBarrelX() {
+        return locX + GameFrame.TANK_SIZE / 2;
+    }
+
+    public void setBarrelX(Integer barrelX) {
+        this.barrelX = barrelX;
+    }
+
+    public Integer getBarrelY() {
+        return locY + GameFrame.TANK_SIZE / 2;
+    }
+
+    public void setBarrelY(Integer barrelY) {
+        this.barrelY = barrelY;
+    }
+
+
 }

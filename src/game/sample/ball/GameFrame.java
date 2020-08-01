@@ -1,6 +1,8 @@
 /*** In The Name of Allah ***/
 package game.sample.ball;
 
+import game.troubleTankSample.ArtificialIntelligenceHandler;
+import game.troubleTankSample.Bullet;
 import game.troubleTankSample.MapHandler;
 import game.troubleTankSample.Tank;
 
@@ -12,6 +14,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  * The window on which the rendering is performed.
@@ -28,10 +31,16 @@ public class GameFrame extends JFrame {
 
     public static final int GAME_HEIGHT = 720;                  // 720p game resolution
     public static final int GAME_WIDTH = 16 * GAME_HEIGHT / 9;  // wide aspect ratio
-    private static Tank myTank;
-    public static final int TANK_SIZE = 70;
-    private ArrayList<Tank> tanks;
+    public static Tank myTank;
+    private static ArrayList<Tank> tanks;
+    public static  int TANK_SIZE = 70;
+    private static ArrayList<Bullet> bullets;
 
+
+    private BufferedImage heartIcon;
+    private BufferedImage laserIcon;
+    private BufferedImage shieldIcon;
+    private BufferedImage powerIcon;
 
 
     //uncomment all /*...*/ in the class for using Tank icon instead of a simple circle
@@ -39,18 +48,33 @@ public class GameFrame extends JFrame {
 
     private long lastRender;
     private ArrayList<Float> fpsHistory;
-    private MapHandler mapHandler ;
+    private MapHandler mapHandler;
     private BufferStrategy bufferStrategy;
+    private ArtificialIntelligenceHandler artificialIntelligenceHandler;
 
     public GameFrame(String title) {
         super(title);
+        bullets = new ArrayList<>();
         mapHandler = new MapHandler();
-        myTank = new Tank(100, 20, 20, "resources/tank_blue.png");
+        mapHandler.setBlocksLocations(GAME_WIDTH, GAME_HEIGHT);
+        TANK_SIZE=3*(mapHandler.getStandardX()+mapHandler.getStandardY())/2;
+
+        tanks = new ArrayList<Tank>();
+        this.artificialIntelligenceHandler = new ArtificialIntelligenceHandler(1, mapHandler, tanks);
+        myTank = new Tank(20, 20, "resources/tank_blue.png");
 
         setResizable(false);
         setSize(GAME_WIDTH, GAME_HEIGHT);
         lastRender = -1;
         fpsHistory = new ArrayList<>(100);
+
+        try {
+            heartIcon = ImageIO.read(new File("./resources/awards resources/heartIcon.png"));
+            laserIcon = ImageIO.read(new File("./resources/awards resources/laser.png"));
+            shieldIcon = ImageIO.read(new File("./resources/awards resources/shield.png"));
+            powerIcon = ImageIO.read(new File("./resources/awards resources/Xpower.png"));
+        } catch (IOException e) {
+        }
 
 	/*	try{
 			image = ImageIO.read(new File("Icon.png"));
@@ -58,19 +82,6 @@ public class GameFrame extends JFrame {
 		catch(IOException e){
 			System.out.println(e);
 		}*/
-
-        //////////             JUST FOR TEST            //////////////////
-        tanks = new ArrayList<Tank>();
-        Tank one = new Tank(50, 500, 90, "./resources/tank_dark.png");
-		one.setPowerBoosted(true);
-		one.setLaser(true);
-        one.setShield(true);
-        tanks.add(one);
-        tanks.add(new Tank(60, 700, 90, "./resources/tank_sand.png"));
-        tanks.add(new Tank(100, 300, 503, "./resources/tank_green.png"));
-        tanks.add(new Tank(40, 300, 503, "./resources/tank_blue.png"));
-        /////
-
 
     }
 
@@ -127,17 +138,43 @@ public class GameFrame extends JFrame {
         // Draw ball
 //		g2d.setColor(Color.BLACK);
 //		g2d.fillOval(state.locX, state.locY, state.diam, state.diam);
+        //////////////////////////// RENDER MAP////////////////////////////////////
 
-       //////////////////////////// RENDER MAP////////////////////////////////////
-        mapHandler.setBlocksLocations(GAME_WIDTH, GAME_HEIGHT);
         mapHandler.renderer(g2d);
-
-
-
         renderTank(myTank, g2d, state);
-        ////////////// RENDER DETAILS/////////////
-        //renderDetails(g2d);
 
+///////////////////////////////
+        //MapHandler.destroy();
+//		System.out.println(artificialIntelligenceHandler.getTanks().get(0));
+//		System.out.println(artificialIntelligenceHandler.getTanks().get(2));
+        //print(artificialIntelligenceHandler.getTanks().get(2));
+        tanks = artificialIntelligenceHandler.getTanks();
+        for (Tank thisTank : getTanks()) {
+            renderTank(thisTank, g2d, state);
+            System.out.println(thisTank.getLocY());
+            System.out.println(thisTank.getLocX());
+        }
+        artificialIntelligenceHandler.update();
+
+////////////////////////////////
+
+        renderDetails(g2d);
+
+        Iterator<Bullet> it = bullets.iterator();
+        while (it.hasNext()) {
+            Bullet bullet = it.next();
+            bullet.update();
+            renderBullet(g2d, bullet);
+            if (bullet.getX3() <= 0 || bullet.getX3() >= GameFrame.GAME_WIDTH) {
+                bullet.setBarrelAngel(Math.toRadians(180) - bullet.getBarrelAngel());
+            }
+            if (bullet.getY3() <= 0 || bullet.getY3() >= GameFrame.GAME_HEIGHT) {
+                bullet.setBarrelAngel(Math.toRadians(360) - bullet.getBarrelAngel());
+            }
+            if (bullet.getPresentTimeOfTheBullet() >= 4000) {
+                it.remove();
+            }
+        }
 
         // Print FPS info
         long currentRender = System.currentTimeMillis();
@@ -192,50 +229,71 @@ public class GameFrame extends JFrame {
         g2d.translate(-tankCenterX, -tankCenterY);
     }
 
-    public void renderDetails(Graphics2D g2d) {
-        g2d.setColor(new Color(200, 200, 200, 100));
-        g2d.fillRoundRect(10, 30, 165, tanks.size() * 35, 10, 10);
-        g2d.setColor(Color.black);
-        g2d.drawRoundRect(10, 30, 165, tanks.size() * 35, 10, 10);
-        int i = 0;
-        for (Tank tank : tanks) {
-            g2d.drawImage(tank.getTankBodyImage(), 15, 35 * i + 35, 30, 30, null, null);
-            i++;
-        }
-        i = 0;
-        for (Tank tank : tanks) {
-            g2d.drawImage(tank.getTankBodyImage(), 15, 35 * i + 35, 30, 30, null, null);
-            i++;
-            float health =( tank.getHealth() > 9999999) ? 10 : (tank.getHealth()) / 10;
-
-            for (int j = 0; j <= health; j++) {
-                try {
-                    g2d.drawImage(ImageIO.read(new File("./resources/awards resources/heartIcon.png")), 50 + j * 11, 35 * i + 35, 10, 10, null, null);
-
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            try {
-                if (tank.isLaser())
-                    g2d.drawImage(ImageIO.read(new File("./resources/awards resources/laser.png")), 50 , 40 * i + 45, 20, 20, null, null);
-                if (tank.isShield())
-                    g2d.drawImage(ImageIO.read(new File("./resources/awards resources/shield.png")), 65 , 40 * i + 45, 20, 20, null, null);
-                if (tank.isPowerBoosted())
-                    g2d.drawImage(ImageIO.read(new File("./resources/awards resources/Xpower.png")), 80 , 40 * i + 45, 20, 20, null, null);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-			i++;
-        }
-
-
+    private void renderBullet(Graphics2D g2d, Bullet bullet) {
+        g2d.translate((int) bullet.getX1(), (int) bullet.getY1());
+        g2d.rotate(bullet.getBarrelAngel());
+        g2d.drawImage(bullet.getBulletImage(), 0, 0, bullet.getBulletHeight(), bullet.getBulletWidth(), null);
+        g2d.rotate(-bullet.getBarrelAngel());
+        g2d.translate((int) -bullet.getX1(), (int) -bullet.getY1());
     }
-
-
 
     public Tank getMyTank() {
         return myTank;
+    }
+
+    public static ArrayList<Bullet> getBullets() {
+        return bullets;
+    }
+
+
+    public void renderDetails(Graphics2D g2d) {
+        tanks = artificialIntelligenceHandler.getTanks();
+        g2d.setColor(new Color(200, 200, 200, 100));
+        g2d.fillRoundRect(10, 30, 165, (1 + tanks.size()) * 35, 10, 10);
+        g2d.setColor(Color.black);
+        g2d.drawRoundRect(10, 30, 165, (1 + tanks.size()) * 35, 10, 10);
+        int i = 0;
+        g2d.drawImage(myTank.getTankBodyImage(), 15, 35, 30, 30, null, null);
+
+
+        for (Tank tank : tanks) {
+            g2d.drawImage(tank.getTankBodyImage(), 15, 35 * (i + 1) + 35, 30, 30, null, null);
+            i++;
+        }
+        i = 0;
+
+
+        int health = (myTank.getHealth() > 9999999) ? 10 : (myTank.getHealth()) / 10;
+        for (int j = 0; j <= health; j++)
+            g2d.drawImage(heartIcon, 50 + j * 11, 35, 10, 10, null, null);
+
+
+        if (myTank.isLaser())
+            g2d.drawImage(laserIcon, 50, 45, 20, 20, null, null);
+        if (myTank.isShield())
+            g2d.drawImage(shieldIcon, 65, 45, 20, 20, null, null);
+        if (myTank.isPowerBoosted())
+            g2d.drawImage(powerIcon, 80, 45, 20, 20, null, null);
+
+
+        for (Tank tank : tanks) {
+            health = (tank.getHealth() > 9999999) ? 10 : (tank.getHealth()) / 10;
+            for (int j = 0; j <= health; j++)
+                g2d.drawImage(heartIcon, 50 + j * 11, 35 * (i + 1) + 35, 10, 10, null, null);
+
+
+                if (tank.isLaser())
+                    g2d.drawImage(laserIcon, 50, 40 * (i + 1) + 45, 20, 20, null, null);
+                if (tank.isShield())
+                    g2d.drawImage(shieldIcon, 65, 40 * (i + 1) + 45, 20, 20, null, null);
+                if (tank.isPowerBoosted())
+                    g2d.drawImage(powerIcon, 80, 40 * (i + 1) + 45, 20, 20, null, null);
+                i++;
+
+        }
+    }
+
+    public static ArrayList<Tank> getTanks() {
+        return tanks;
     }
 }

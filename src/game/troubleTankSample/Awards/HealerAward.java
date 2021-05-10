@@ -20,8 +20,6 @@ public class HealerAward extends Award{
 
     @Override
     public void doAction(Tank tank) {
-
       tank.setHealth((int) (awardsQuantity*tank.getHealth()));
     }
-
 }

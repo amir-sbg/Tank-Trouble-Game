@@ -55,7 +55,7 @@ public class Tank {
         }
     }
 
-    public void fire(Integer tankSize) {
+    public void fire() {
         bulletWidth =GameFrame.TANK_SIZE / 6;
         bulletHeight = GameFrame.TANK_SIZE / 4;
         barrelX = locX + GameFrame.TANK_SIZE / 2;
@@ -185,15 +185,13 @@ public class Tank {
     }
 
     public void setTankBodyImage(String image)  {
-
         try {
             tankBodyImage=ImageIO.read(new File(image));
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-
     }
+
 
     public Integer getBarrelX() {
         return locX + GameFrame.TANK_SIZE / 2;
@@ -204,7 +202,7 @@ public class Tank {
     }
 
     public Integer getBarrelY() {
-        return locY + GameFrame.TANK_SIZE / 2;
+        return locY + GameFrame.TANK_SIZE / 2 ;
     }
 
     public void setBarrelY(Integer barrelY) {

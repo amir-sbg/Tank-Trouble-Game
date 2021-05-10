@@ -57,11 +57,11 @@ public class GameFrame extends JFrame {
         bullets = new ArrayList<>();
         mapHandler = new MapHandler();
         mapHandler.setBlocksLocations(GAME_WIDTH, GAME_HEIGHT);
-        TANK_SIZE=3*(mapHandler.getStandardX()+mapHandler.getStandardY())/2;
+        //TANK_SIZE=3*(mapHandler.getStandardX()+mapHandler.getStandardY())/2;
 
         tanks = new ArrayList<Tank>();
         this.artificialIntelligenceHandler = new ArtificialIntelligenceHandler(1, mapHandler, tanks);
-        myTank = new Tank(20, 20, "resources/tank_blue.png");
+        myTank = new Tank(50, 50, "resources/tank_blue.png");
 
         setResizable(false);
         setSize(GAME_WIDTH, GAME_HEIGHT);
@@ -295,5 +295,9 @@ public class GameFrame extends JFrame {
 
     public static ArrayList<Tank> getTanks() {
         return tanks;
+    }
+
+    public MapHandler getMapHandler() {
+        return mapHandler;
     }
 }

@@ -40,8 +40,8 @@ public class Block {
     public void setBlocksType(String blocksType) { this.blocksType = blocksType; }
     public int getBlocksCentreX(){return (x1+x3)/2;}
     public int getBlocksCentreY(){return (y1+y3)/2;}
-    public boolean isInThisBlock(int x,int y,int size){
-        if(x>x1 && x<x2 && y<y3 && y>y1){
+    public boolean isInThisBlock(int x,int y){
+        if(x>x1 && x<x2 && y<y4 && y>y1){
           //  if(x-size/2>x1 && x+size/2<x2 && y+size/2<y3 && y-size/2>y1){
                 return true;
           //  }

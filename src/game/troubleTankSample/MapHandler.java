@@ -91,13 +91,13 @@ public class MapHandler {
 
 
     public void setBlocksLocations(int frames_width, int frames_height) {
-        standardX = (frames_width+20) / (4 * frameXsize - 3);
-        standardY = (frames_height-30) / (4 * frameYsize - 3);
+        standardX = (frames_width) / (4 * frameXsize - 3);
+        standardY = (frames_height) / (4 * frameYsize - 3);
 
         int tempX = 0, tempY = 0;
         for (int i = 0; i < frameYsize; i++) {
             for (int j = 0; j < frameXsize; j++) {
-                mapsBlocks[i][j].setLocation(tempX, tempY+30, (j % 2 == 0) ? standardX : 7 * standardX, (i % 2 == 0) ? standardY : 7 * standardY);
+                mapsBlocks[i][j].setLocation(tempX, tempY,  (i % 2 == 0) ? standardY : 7 * standardY,(j % 2 == 0) ? standardX : 7 * standardX);
                 if (j % 2 == 0) tempX += standardX;
                 else tempX += (7 * standardX);
             }
@@ -109,17 +109,27 @@ public class MapHandler {
 
         for (int i = 0; i < frameYsize; i++) {
             for (int j = 0; j < frameXsize; j++) {
-                // System.out.print(mapsBlocks[i][j].getX1() + "__" + mapsBlocks[i][j].getY1() + "->" + mapsBlocks[i][j].getX3() + "__" + mapsBlocks[i][j].getY3() + "  ");
+                System.out.println(mapsBlocks[i][j].getX1()+ "   "+mapsBlocks[i][j].getY1()+" 2:::::"+mapsBlocks[i][j].getX2()+ "   "+mapsBlocks[i][j].getY2());
             }
-            //System.out.println("\n");
-        }
+            }
+        System.out.println("---------------------------------------------------------------------------------");
+
+//        for (int i = 0; i < frameYsize; i++) {
+//            for (int j = 0; j < frameXsize; j++) {
+//                System.out.println(mapsBlocks[i][j].getX1() + "    " + mapsBlocks[i][j].getY1());
+//                System.out.println(mapsBlocks[i][j].getX2() + "    " + mapsBlocks[i][j].getY2());
+//                System.out.println(mapsBlocks[i][j].getX3() + "    " + mapsBlocks[i][j].getY3());
+//                System.out.println(mapsBlocks[i][j].getX4() + "    " + mapsBlocks[i][j].getY4());
+//            }
+//            System.out.println("\n");
+//            }
     }
 
     public void renderer(Graphics2D graphics2D) {
 
         for (int i = 0; i < 10; i++)
             for (int j = 0; j < 10; j++)
-                graphics2D.drawImage(passableField_Icon, 250 * i, 150 * j, 250, 150, null);
+                graphics2D.drawImage(passableField_Icon, 250 * i, 150 * j, 250, 150,  null);
 
 
         for (int i = 0; i < frameYsize; i++) {
@@ -132,29 +142,27 @@ public class MapHandler {
                 else //if(mapsBlocks[i][j].getBlocksType().equals(DESTROYABLE_WALL))
                     bufferedImage = destroyableWall_Icon;
 
-
+                int size=Math.max((mapsBlocks[0][0].getBlocksHeight()),(mapsBlocks[0][0].getBlocksWidth()));
                 if (i % 2 == 0 && j % 2 == 1) {
                     for (int t = 0; t < 7; t++) {
                         //graphics2D.rotate(Math.toRadians(30), 100, 430);
                         if (!mapsBlocks[i][j].getBlocksType().equals(PASSABLE_FIELD))
-                            graphics2D.drawImage(bufferedImage, (mapsBlocks[i][j].getX1() + t * mapsBlocks[0][0].getBlocksHeight()), (mapsBlocks[i][j].getY1()), (mapsBlocks[0][0].getBlocksHeight()), (mapsBlocks[0][0].getBlocksHeight()), null);
+                            graphics2D.drawImage(bufferedImage, (mapsBlocks[i][j].getX1() + t * mapsBlocks[0][0].getBlocksHeight()), (mapsBlocks[i][j].getY1()), size,size, null);
                     }
-
-                } else if (i % 2 == 1 && j % 2 == 0) {
+                }
+                 else if (i % 2 == 1 && j % 2 == 0) {
                     for (int t = 0; t < 7; t++) {
                         if (!mapsBlocks[i][j].getBlocksType().equals(PASSABLE_FIELD))
-                            graphics2D.drawImage(bufferedImage, (mapsBlocks[i][j].getX1()), (mapsBlocks[i][j].getY1() + t * mapsBlocks[0][0].getBlocksWidth()), (mapsBlocks[0][0].getBlocksHeight()), (mapsBlocks[0][0].getBlocksHeight()), null);
+                            graphics2D.drawImage(bufferedImage, (mapsBlocks[i][j].getX1()), (mapsBlocks[i][j].getY1() + t * mapsBlocks[0][0].getBlocksWidth()),  size,size, null);
                     }
                 } else if (i % 2 == 0 && j % 2 == 0) {
                     if (!mapsBlocks[i][j].getBlocksType().equals(PASSABLE_FIELD))
-                        graphics2D.drawImage(bufferedImage, (mapsBlocks[i][j].getX1()), (mapsBlocks[i][j].getY1()), (mapsBlocks[0][0].getBlocksHeight()), (mapsBlocks[0][0].getBlocksHeight()), null);
-
+                        graphics2D.drawImage(bufferedImage, (mapsBlocks[i][j].getX1()), (mapsBlocks[i][j].getY1()), size,size, null);
                 }
-
-
+                 //else
+                   // graphics2D.drawImage(passableField_Icon, (mapsBlocks[i][j].getX1()), (mapsBlocks[i][j].getY1()), (mapsBlocks[i][j].getBlocksWidth()), (mapsBlocks[i][j].getBlocksHeight()), null);
             }
         }
-
 
     }
 
@@ -213,41 +221,55 @@ public class MapHandler {
 
 
     public boolean rightIsBlank(Tank tank) {
-        int rightBound = tank.getLocX() +tank.getTankSize();
-        int tankMinY = tank.getLocY();
-        int tankMaxY = tank.getLocY() + tank.getTankSize();
+        int rightBound = tank.getBarrelX() +tank.getTankSize()/2;
+        int leftBound = tank.getBarrelX() -tank.getTankSize()/2;
+        int tankMinY = tank.getBarrelY() - tank.getTankSize()/2;
+        int tankMaxY = tank.getBarrelY() + tank.getTankSize()/2;
+        int wallMinY;
+        int wallMaxY;
+
 
         for (int i = 0; i < frameYsize; i++) {
             for (int j = 0; j < frameXsize; j++) {
-                if (mapsBlocks[i][j].getBlocksType().equals(STRONG_WALL) || mapsBlocks[i][j].getBlocksType().equals(DESTROYABLE_WALL)) {
-                    if (mapsBlocks[i][j].getHealth() > 0 && mapsBlocks[i][j].getHealth() != 9999) {
-                        int wallMinY = mapsBlocks[i][j].getX1();
-                        int wallMaxY = mapsBlocks[i][j].getY1() + mapsBlocks[i][j].getBlocksHeight();
-                        if ((tankMinY <= wallMinY && tankMaxY > wallMinY) || (tankMinY >= wallMinY && tankMaxY <= wallMaxY) || (tankMinY < wallMaxY && tankMaxY >= wallMaxY)) {
-                            if (rightBound <= mapsBlocks[i][j].getX1() && rightBound + tank.getTankSize() >= mapsBlocks[i][j].getX1()) {
+
+                if( (mapsBlocks[i][j].getBlocksType().equals(STRONG_WALL) || mapsBlocks[i][j].getBlocksType().equals(DESTROYABLE_WALL) )  && mapsBlocks[i][j].getHealth() > 0) {
+
+                         wallMinY = mapsBlocks[i][j].getY1();
+                         wallMaxY = mapsBlocks[i][j].getY4();
+
+
+                        if ( (tankMinY <= wallMinY && tankMaxY > wallMinY) || (tankMinY >= wallMinY && tankMaxY <= wallMaxY) || (tankMinY < wallMaxY && tankMaxY >= wallMaxY)) {
+                            if (rightBound+4 >= mapsBlocks[i][j].getX1() && leftBound < mapsBlocks[i][j].getX1()) {
                                 return false;
                             }
                         }
                     }
                 }
             }
-        }
         return true;
     }
     public boolean leftIsBlank(Tank tank) {
-        int leftBound = tank.getLocX();
-        int tankMinY = tank.getLocY();
-        int tankMaxY = tank.getLocY() + tank.getTankSize();
+        int rightBound = tank.getBarrelX() +tank.getTankSize()/2;
+        int leftBound = tank.getBarrelX() -tank.getTankSize()/2;
+        int tankMinY = tank.getBarrelY() - tank.getTankSize()/2;
+        int tankMaxY = tank.getBarrelY() + tank.getTankSize()/2;
+        int wallMinY;
+        int wallMaxY;
+
+
         for (int i = 0; i < frameYsize; i++) {
             for (int j = 0; j < frameXsize; j++) {
-                if (mapsBlocks[i][j].getBlocksType().equals(STRONG_WALL) || mapsBlocks[i][j].getBlocksType().equals(DESTROYABLE_WALL)) {
-                    if (mapsBlocks[i][j].getHealth() > 0) {
-                        int wallMinY = mapsBlocks[i][j].getY1();
-                        int wallMaxY = mapsBlocks[i][j].getY1() + mapsBlocks[i][j].getBlocksHeight();
-                        if ((tankMinY <= wallMinY && tankMaxY > wallMinY) || (tankMinY >= wallMinY && tankMaxY <= wallMaxY) || (tankMinY < wallMaxY && tankMaxY >= wallMaxY)) {
-                            if (leftBound >= mapsBlocks[i][j].getX1() + mapsBlocks[i][j].getBlocksWidth() && leftBound - tank.getTankSize() <= mapsBlocks[i][j].getX1() + mapsBlocks[i][j].getBlocksWidth()) {
-                                return false;
-                            }
+
+                if( (mapsBlocks[i][j].getBlocksType().equals(STRONG_WALL) || mapsBlocks[i][j].getBlocksType().equals(DESTROYABLE_WALL) )  && mapsBlocks[i][j].getHealth() > 0) {
+
+                    wallMinY = mapsBlocks[i][j].getY1();
+                    wallMaxY = mapsBlocks[i][j].getY4();
+
+
+                    if ( (tankMinY <= wallMinY && tankMaxY > wallMinY) || (tankMinY >= wallMinY && tankMaxY <= wallMaxY) || (tankMinY < wallMaxY && tankMaxY >= wallMaxY)) {
+
+                        if (leftBound-4 <= mapsBlocks[i][j].getX2() && rightBound > mapsBlocks[i][j].getX2()) {
+                            return false;
                         }
                     }
                 }
@@ -256,19 +278,27 @@ public class MapHandler {
         return true;
     }
     public boolean upIsBlank(Tank tank) {
-        int upBound = tank.getLocY();
-        int tankMinX = tank.getLocX();
-        int tankMaxX = tank.getLocX() + tank.getTankSize();
+        int upBound = tank.getBarrelY() -tank.getTankSize()/2;
+        int downBound = tank.getBarrelY() +tank.getTankSize()/2;
+        int tankMinX = tank.getBarrelX() - tank.getTankSize()/2;
+        int tankMaxX = tank.getBarrelX() + tank.getTankSize()/2;
+        int wallMinX;
+        int wallMaxX;
+
+
         for (int i = 0; i < frameYsize; i++) {
             for (int j = 0; j < frameXsize; j++) {
-                if (mapsBlocks[i][j].getBlocksType().equals(STRONG_WALL) || mapsBlocks[i][j].getBlocksType().equals(DESTROYABLE_WALL)) {
-                    if (mapsBlocks[i][j].getHealth() > 0) {
-                        int wallMinX = mapsBlocks[i][j].getX1();
-                        int wallMaxX = mapsBlocks[i][j].getX1() + mapsBlocks[i][j].getBlocksWidth();
-                        if ((tankMinX <= wallMinX && tankMaxX > wallMinX) || (tankMinX >= wallMinX && tankMaxX <= wallMaxX) || (tankMinX < wallMaxX && tankMaxX >= wallMaxX)) {
-                            if (upBound >= mapsBlocks[i][j].getY1() + mapsBlocks[i][j].getBlocksHeight() && upBound - tank.getTankSize()<= mapsBlocks[i][j].getY1() + mapsBlocks[i][j].getBlocksHeight()) {
-                                return false;
-                            }
+
+                if( (mapsBlocks[i][j].getBlocksType().equals(STRONG_WALL) || mapsBlocks[i][j].getBlocksType().equals(DESTROYABLE_WALL) )  && mapsBlocks[i][j].getHealth() > 0) {
+
+                    wallMinX = mapsBlocks[i][j].getX1();
+                    wallMaxX = mapsBlocks[i][j].getX2();
+
+
+                    if ( (tankMinX <= wallMinX && tankMaxX > wallMinX) || (tankMinX >= wallMinX && tankMaxX <= wallMaxX) || (tankMinX < wallMaxX && tankMaxX >= wallMaxX)) {
+
+                        if (upBound-4 <= mapsBlocks[i][j].getY4() && downBound > mapsBlocks[i][j].getY4()) {
+                            return false;
                         }
                     }
                 }
@@ -277,20 +307,27 @@ public class MapHandler {
         return true;
     }
     public boolean downIsBlank(Tank tank) {
+        int upBound = tank.getBarrelY() -tank.getTankSize()/2;
+        int downBound = tank.getBarrelY() +tank.getTankSize()/2;
+        int tankMinX = tank.getBarrelX() - tank.getTankSize()/2;
+        int tankMaxX = tank.getBarrelX() + tank.getTankSize()/2;
+        int wallMinX;
+        int wallMaxX;
 
-        int downBound = tank.getLocY() + tank.getTankSize();
-        int tankMinX = tank.getLocX();
-        int tankMaxX = tank.getLocX() + tank.getTankSize();
+
         for (int i = 0; i < frameYsize; i++) {
             for (int j = 0; j < frameXsize; j++) {
-                if (mapsBlocks[i][j].getBlocksType().equals(STRONG_WALL) || mapsBlocks[i][j].getBlocksType().equals(DESTROYABLE_WALL)) {
-                    if (mapsBlocks[i][j].getHealth() > 0) {
-                        int wallMinX = mapsBlocks[i][j].getX1();
-                        int wallMaxX = mapsBlocks[i][j].getX1() + mapsBlocks[i][j].getBlocksWidth();
-                        if ((tankMinX <= wallMinX && tankMaxX > wallMinX) || (tankMinX >= wallMinX && tankMaxX <= wallMaxX) || (tankMinX < wallMaxX && tankMaxX >= wallMaxX)) {
-                            if (downBound <= mapsBlocks[i][j].getY1() && downBound + tank.getTankSize() >= mapsBlocks[i][j].getY1()) {
-                                return false;
-                            }
+
+                if( (mapsBlocks[i][j].getBlocksType().equals(STRONG_WALL) || mapsBlocks[i][j].getBlocksType().equals(DESTROYABLE_WALL) )  && mapsBlocks[i][j].getHealth() > 0) {
+
+                    wallMinX = mapsBlocks[i][j].getX1();
+                    wallMaxX = mapsBlocks[i][j].getX2();
+
+
+                    if ( (tankMinX <= wallMinX && tankMaxX > wallMinX) || (tankMinX >= wallMinX && tankMaxX <= wallMaxX) || (tankMinX < wallMaxX && tankMaxX >= wallMaxX)) {
+
+                        if (downBound+4 >= mapsBlocks[i][j].getY1() && upBound < mapsBlocks[i][j].getY1()) {
+                            return false;
                         }
                     }
                 }
@@ -301,24 +338,25 @@ public class MapHandler {
 
 
     public boolean bulletsUpIsBlank(Bullet bullet){
-        int upBound = (int) bullet.getY1();
-        int tankMinX = (int) bullet.getX1();
-        int tankMaxX = (int) (bullet.getX1()+ bullet.getBulletWidth());
-        for (int i = 0; i < frameYsize; i++) {
-            for (int j = 0; j < frameXsize; j++) {
-                if (mapsBlocks[i][j].getBlocksType().equals(STRONG_WALL) || mapsBlocks[i][j].getBlocksType().equals(DESTROYABLE_WALL)) {
-                    if (mapsBlocks[i][j].getHealth() > 0) {
-                        int wallMinX = mapsBlocks[i][j].getX1();
-                        int wallMaxX = mapsBlocks[i][j].getX1() + mapsBlocks[i][j].getBlocksWidth();
-                        if ((tankMinX <= wallMinX && tankMaxX > wallMinX) || (tankMinX >= wallMinX && tankMaxX <= wallMaxX) || (tankMinX < wallMaxX && tankMaxX >= wallMaxX)) {
-                            if (upBound >= mapsBlocks[i][j].getY1() + mapsBlocks[i][j].getBlocksHeight() && upBound -(bullet.getBulletWidth()+bullet.getBulletHeight())/2<= mapsBlocks[i][j].getY1() + mapsBlocks[i][j].getBlocksHeight()) {
-                                return false;
-                            }
-                        }
-                    }
-                }
-            }
-        }
+//        int bulletX = (int) (bullet.getY1()+bullet.getY2())/2;
+//        int bulletY = (int) (bullet.getX1()+bullet.getX3())/2;
+//
+//
+//        for (int i = 0; i < frameYsize; i++) {
+//            for (int j = 0; j < frameXsize; j++) {
+//                if (mapsBlocks[i][j].getBlocksType().equals(STRONG_WALL) || mapsBlocks[i][j].getBlocksType().equals(DESTROYABLE_WALL)) {
+//                    if (mapsBlocks[i][j].getHealth() > 0) {
+//                        int wallMinX = mapsBlocks[i][j].getX1();
+//                        int wallMaxX = mapsBlocks[i][j].getX1() + mapsBlocks[i][j].getBlocksWidth();
+//                        if ((tankMinX <= wallMinX && tankMaxX > wallMinX) || (tankMinX >= wallMinX && tankMaxX <= wallMaxX) || (tankMinX < wallMaxX && tankMaxX >= wallMaxX)) {
+//                            if (upBound >= mapsBlocks[i][j].getY1() + mapsBlocks[i][j].getBlocksHeight() && upBound -(bullet.getBulletWidth()+bullet.getBulletHeight())/2<= mapsBlocks[i][j].getY1() + mapsBlocks[i][j].getBlocksHeight()) {
+//                                return false;
+//                            }
+//                        }
+//                    }
+//                }
+//            }
+//        }
         return true;
     }
     public boolean bulletsDownIsBlank(Bullet bullet){
@@ -436,27 +474,36 @@ public class MapHandler {
         return true;
     }
     public  boolean canMove(int rightMovement, int downMovement, Tank tank) {
-        //int centerX = tank.getLocX() + tank.getTankSize() / 2;
-        int centerX = tank.getBarrelX();
-        //int centerY = tank.getLocY() +tank.getTankSize() / 2;
-        int centerY = tank.getBarrelY();
+        int centerX = tank.getLocX() + tank.getTankSize() / 2;
+        //int centerX = tank.getBarrelX();
+        int centerY = tank.getLocY() +tank.getTankSize() / 2;
+        //int centerY = tank.getBarrelY();
         centerX += rightMovement;
         centerY += downMovement;
         int angle = tank.getBodyAngel();
         double diameter = Math.sqrt(2) * tank.getTankSize();
         int x1, x2, x3, x4, y1, y2, y3, y4;
-        x1 = (int) (centerX - Math.cos(Math.toRadians(angle + 45+90+90)) * diameter / 2);
-        y1 = (int) (centerY - Math.sin(Math.toRadians(angle + 45+90+90)) * diameter / 2);
-        x2 = (int) (centerX + Math.sin(Math.toRadians(angle + 45+90+90)) * diameter / 2);
-        y2 = (int) (centerY - Math.cos(Math.toRadians(angle + 45+90+90)) * diameter / 2);
-        x3 = (int) (centerX + Math.cos(Math.toRadians(angle + 45+90+90)) * diameter / 2);
-        y3 = (int) (centerY + Math.sin(Math.toRadians(angle + 45+90+90)) * diameter / 2);
-        x4 = (int) (centerX - Math.sin(Math.toRadians(angle + 45+90+90)) * diameter / 2);
-        y4 = (int) (centerY + Math.cos(Math.toRadians(angle + 45+90+90)) * diameter / 2);
+        x1 = (int) (centerX - Math.cos(Math.toRadians(angle + 45)) * diameter / 2);
+        y1 = (int) (centerY - Math.sin(Math.toRadians(angle + 45)) * diameter / 2);
+        x2 = (int) (centerX + Math.sin(Math.toRadians(angle + 45)) * diameter / 2);
+        y2 = (int) (centerY - Math.cos(Math.toRadians(angle + 45)) * diameter / 2);
+        x3 = (int) (centerX + Math.cos(Math.toRadians(angle + 45)) * diameter / 2);
+        y3 = (int) (centerY + Math.sin(Math.toRadians(angle + 45)) * diameter / 2);
+        x4 = (int) (centerX - Math.sin(Math.toRadians(angle + 45)) * diameter / 2);
+        y4 = (int) (centerY + Math.cos(Math.toRadians(angle + 45)) * diameter / 2);
         for (int i = 0; i < frameYsize; i++) {
             for (int j = 0; j < frameXsize; j++) {
                 if (isCollided(mapsBlocks[i][j].getX1(),mapsBlocks[i][j].getY1(),mapsBlocks[i][j].getX2(), mapsBlocks[i][j].getY2(), mapsBlocks[i][j].getX3(), mapsBlocks[i][j].getY3(),mapsBlocks[i][j].getX4(),mapsBlocks[i][j].getY4(), x1, y1, x2, y2, x3, y3, x4, y4)) {
+
                     if (mapsBlocks[i][j].getBlocksType().equals(STRONG_WALL) || mapsBlocks[i][j].getBlocksType().equals(DESTROYABLE_WALL)) {
+                        System.out.println("map x12=="+ mapsBlocks[i][j].getX1()+"_"+mapsBlocks[i][j].getY1()+"   "+mapsBlocks[i][j].getX2()+"_"+mapsBlocks[i][j].getY2 ());
+                        System.out.println("map x43=="+ mapsBlocks[i][j].getX4()+"_"+mapsBlocks[i][j].getY4()+"   "+mapsBlocks[i][j].getX3()+"_"+mapsBlocks[i][j].getY3 ());
+                        System.out.println(" tank x12=="+x1+"_"+y1+"   "+x2+"_"+y2);
+                        System.out.println("map y14=="+ mapsBlocks[i][j].getY1()+"   "+mapsBlocks[i][j].getY4());
+                        System.out.println(" tank y14=="+y1+"   "+y4);
+                       // System.out.println(y1+"   "+mapsBlocks[i][j].getY1());
+                        //System.out.println(y4+"   "+mapsBlocks[i][j].getY4());
+                        System.out.println(angle);
                         if (mapsBlocks[i][j].getHealth() > 0) {
                             return false;
                         }
@@ -464,9 +511,9 @@ public class MapHandler {
                 }
             }
         }
-        if (computerTankIsCollided(x1, x2, x3, x4, y1, y2, y3, y4, tank, rightMovement, downMovement, 0)) {
-            return false;
-        }
+//        if (computerTankIsCollided(x1, x2, x3, x4, y1, y2, y3, y4, tank, rightMovement, downMovement, 0)) {
+//            return false;
+//        }
         return true;
     }
 

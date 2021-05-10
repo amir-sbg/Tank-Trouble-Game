@@ -1,6 +1,7 @@
 /*** In The Name of Allah ***/
 package game.sample.ball;
 
+import game.troubleTankSample.MapHandler;
 import game.troubleTankSample.Tank;
 
 import java.awt.event.KeyAdapter;
@@ -28,9 +29,10 @@ public class GameState {
 	public static boolean isMoving = false;
 	private KeyHandler keyHandler;
 	private MouseHandler mouseHandler;
-	
+	private MapHandler mapHandler;
 	public GameState(GameFrame gameFrame) {
 		this.gameFrame = gameFrame;
+
 		locX = 100;
 		locY = 100;
 		diam = 32;
@@ -53,8 +55,9 @@ public class GameState {
 	 * The method which updates the game state.
 	 */
 	public void update() {
+		mapHandler=gameFrame.getMapHandler();
 		isMoving = keyDOWN || keyUP || keyLEFT || keyRIGHT;
-		Tank tank = gameFrame.getMyTank();
+		Tank tank = GameFrame.myTank;
 		int centerX = tank.getLocX() + GameFrame.TANK_SIZE/2;
 		int centerY = tank.getLocY() + GameFrame.TANK_SIZE/2;
 		int angle = tank.getBodyAngel();
@@ -88,10 +91,18 @@ public class GameState {
 //					tank.setBodyAngel(angle + 10);
 //				}
 //			}
-			tank.changeY(-10);
-			tank.setLocY(Math.max(tank.getLocY(), 0));
-			tank.setLocY((int) Math.min(tank.getLocY(), GameFrame.GAME_HEIGHT - diam));
+			if(mapHandler.canMove(0,-10,tank)) {
+				tank.changeY(-10);
+				tank.setLocY(Math.max(tank.getLocY(), 0));
+				tank.setLocY((int) Math.min(tank.getLocY(), GameFrame.GAME_HEIGHT - diam));
+			}
+
+//			tank.changeY(-10);
+//			tank.setLocY(Math.max(tank.getLocY(), 0));
+//			tank.setLocY((int) Math.min(tank.getLocY(), GameFrame.GAME_HEIGHT - diam));
 		}
+
+
 
 		if (keyDOWN && !keyUP) {
 			if (keyRIGHT && !keyLEFT) {
@@ -115,9 +126,18 @@ public class GameState {
 //				}
 //			}
 
-			tank.changeY(10);
-			tank.setLocY(Math.max(tank.getLocY(), 0));
-			tank.setLocY((int) Math.min(tank.getLocY(), GameFrame.GAME_HEIGHT - diam));
+
+			if(mapHandler.canMove(0,10,tank)){
+				System.out.println(tank.getLocX()+"       tank      "+tank.getLocY());
+				tank.changeY(10);
+				tank.setLocY(Math.max(tank.getLocY(),0));
+				tank.setLocY((int)Math.min(tank.getLocY(),GameFrame.GAME_HEIGHT-diam));
+			}
+
+
+//			tank.changeY(10);
+//			tank.setLocY(Math.max(tank.getLocY(), 0));
+//			tank.setLocY((int) Math.min(tank.getLocY(), GameFrame.GAME_HEIGHT - diam));
 		}
 
 		if (keyLEFT && !keyRIGHT) {
@@ -128,9 +148,16 @@ public class GameState {
 //					tank.setBodyAngel(angle + 10);
 //				}
 //			}
-			tank.changeX(-10);
-			tank.setLocX(Math.max(tank.getLocX(), 0));
-			tank.setLocX((int) Math.min(tank.getLocX(), GameFrame.GAME_WIDTH - diam));
+			if(mapHandler.canMove(-10,0,tank)){
+				tank.changeX(-10);
+				tank.setLocX(Math.max(tank.getLocX(), 0));
+				tank.setLocX((int) Math.min(tank.getLocX(), GameFrame.GAME_WIDTH - diam));
+
+			}
+
+//			tank.changeX(-10);
+//			tank.setLocX(Math.max(tank.getLocX(), 0));
+//			tank.setLocX((int) Math.min(tank.getLocX(), GameFrame.GAME_WIDTH - diam));
 		}
 
 		if (keyRIGHT && !keyLEFT) {
@@ -141,9 +168,17 @@ public class GameState {
 //					tank.setBodyAngel(angle + 10);
 //				}
 //			}
-			tank.changeX(10);
-			tank.setLocX(Math.max(tank.getLocX(), 0));
-			tank.setLocX((int) Math.min(tank.getLocX(), GameFrame.GAME_WIDTH - diam));
+
+			if(mapHandler.canMove(10,0,tank)){
+
+				tank.changeX(10);
+				tank.setLocX(Math.max(tank.getLocX(), 0));
+				tank.setLocX((int) Math.min(tank.getLocX(), GameFrame.GAME_WIDTH - diam));
+			}
+//			tank.changeX(10);
+//			tank.setLocX(Math.max(tank.getLocX(), 0));
+//			tank.setLocX((int) Math.min(tank.getLocX(), GameFrame.GAME_WIDTH - diam));
+
 		}
 
 
@@ -241,7 +276,7 @@ public class GameState {
 			mousePress = true;
 			Tank tank = gameFrame.getMyTank();
 			if (e.getButton() == MouseEvent.BUTTON1)
-				tank.fire(70);
+				tank.fire();
 		}
 
 		@Override
